@@ -66,12 +66,75 @@ int main(int argc, char **argv)
 	return (0);
 }
 
+int check_char_end_line(std::string line)
+{
+	if ((line[13] < '0' || line[13] > '9') && line[13] != '-')
+		return 0;
+	for (int i = 14; line[i]; ++i)
+	{
+		if (line[i] < '0' || line[i] > '9')
+			return 0;
+	}
+	return 1;
+}
+
+int check_date(std::string line)
+{
+	for (int i = 0; i < 10; ++i)
+	{
+		if (i == 4 || i == 7)
+		{
+			if (line[i] != '-')
+				return 0;
+		}
+		else
+		{
+			if (line[i] < '0' || line[i] > '9')
+				return 0;
+		}
+	}
+
+	int year = std::atoi(line.substr(0, 4).c_str());
+	int month = std::atoi(line.substr(5, 2).c_str());
+	int day = std::atoi(line.substr(8, 2).c_str());
+
+	if (year < 2009 || year > 2026)
+		return 0;
+	if (month < 1 || month > 12)
+		return 0;
+	int days_in_month[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+	if (month == 2 && (year % 4 == 0)) // voir le calcul bix
+		days_in_month[1] = 29;
+	if (day < 1 || day > days_in_month[month - 1])
+		return 0;
+
+	if (year == 2009 && month == 1 && day == 1)
+		return 0;
+
+	return 1;
+}
+
 int parsing(std::string line)
 {
 	if (line.size() < 14 || line.substr(10, 3).compare(" | ") != 0)
 	{
 		std::cout << "Error : bad input => " << line << std::endl;
 		return (0);
+	}
+	if (check_char_end_line(line) == 0)
+	{
+		std::cout << "Error : bad input => " << line << std::endl;
+		return (0);
+	}
+	if (check_date(line) == 0)
+	{
+		std::cout << "Error : bad input => " << line << std::endl;
+		return (0);
+	}
+	if (line[13] == '-')
+	{
+		std::cout << "Error: not a positive number" << std::endl;
+		return 0;
 	}
 	if (line.size() > 17 || (line.size() == 17 && line.substr(13).compare("1000") != 0))
 	{
