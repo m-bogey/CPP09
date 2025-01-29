@@ -8,11 +8,11 @@
 class BCE
 {
     private:
+        BCE(const BCE & o);
+        BCE& operator=(const BCE & o);
     public:
         std::map<std::string, float> DataCSV;
         BCE();
-        BCE(const BCE & o);
-        BCE& operator=(const BCE & o);
         ~BCE();
 };
 
