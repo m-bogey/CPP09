@@ -8,6 +8,8 @@ int parsing(std::string s, RPN &r)
     int nb = 0;
     int op = 0;
     int i = 0;
+    bool next_op_is_before_nb = false;
+
     while (s[i])
     {
         if ((s[i] < '0' || s[i] > '9') && s[i] != '-' && s[i] != '+'
@@ -22,12 +24,18 @@ int parsing(std::string s, RPN &r)
         {
             r.stackNumber.push(s[i] - '0');
             nb++;
+            next_op_is_before_nb = false;
         }
         if (s[i] == '-' || s[i] == '+'
             || s[i] == '/' || s[i] == '*')
         {
+            if (next_op_is_before_nb == true)
+                r.nextOp.push(2);
+            else
+                r.nextOp.push(1);
             r.stackOp.push(s[i]);
             op++;
+            next_op_is_before_nb = true;
         }
         i--;
     }
@@ -42,6 +50,7 @@ int calculRPN(int a, int b, RPN &r)
 
     if (!r.stackOp.empty())
         r.stackOp.pop();
+    r.nextOp.pop();
     if (op == '+')
         return a + b;
     if (op == '-')
@@ -64,7 +73,10 @@ int resultRPN(RPN &r)
 {
     int a;
     int b;
+    int c;
+    int next;
     bool is_first = true;
+
     while (!r.stackNumber.empty())
     {
         if (is_first)
@@ -79,6 +91,13 @@ int resultRPN(RPN &r)
         }
         b = r.stackNumber.top();
         r.stackNumber.pop();
+        next = r.nextOp.top();
+        if (next == 2)
+        {
+            c = r.stackNumber.top();
+            b = calculRPN(b, c, r);
+            r.stackNumber.pop();
+        }
         r.stack.push(calculRPN(a, b, r));
         is_first = false;
     }

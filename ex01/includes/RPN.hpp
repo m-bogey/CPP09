@@ -12,6 +12,7 @@ class RPN
         std::stack<int> stackNumber;
         std::stack<char> stackOp;
         std::stack<int> stack;
+        std::stack<int> nextOp;
         RPN();
         ~RPN();
 };
