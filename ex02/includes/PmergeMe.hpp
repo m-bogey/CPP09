@@ -13,6 +13,9 @@ class PmergeMe
         PmergeMe& operator=(const PmergeMe & o);
     public:
         std::vector<int> vec;
+        std::vector<int> vec_pend;
+        std::vector<int> id_vec;
+        std::deque<int> deq;
 
         PmergeMe();
         ~PmergeMe();
