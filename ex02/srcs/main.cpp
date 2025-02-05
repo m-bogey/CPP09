@@ -70,18 +70,20 @@ void identify_elem_vec(PmergeMe &p, size_t &turn)
 {
     size_t  i = 0;
     int     id = 0;
-    size_t  compteur = 0;
+    int  compteur = 0;
     int     turn_limit = static_cast<int>(turn);
 
+    if (turn_limit % 2 != 0)
+        turn_limit--;
     while (i < p.vec.size())
     {
         p.id_vec.push_back(id);
         compteur++;
-        if (compteur == turn && id != -1)
+        if (compteur == turn_limit && id != -1)
         {
             compteur = 0;
             id++;
-            if (id >= turn_limit)
+            if (id >= static_cast<int>(turn) + 1)
                 id = -1;
         }
         i++;
@@ -90,55 +92,78 @@ void identify_elem_vec(PmergeMe &p, size_t &turn)
     p.printVector(p.id_vec);
 }
 
-void classify_in_main_and_pend(PmergeMe &p)
+int my_binary_search(const std::vector<std::pair<int, int> >& vec, int target)
 {
-    size_t j = 0; // pour tomber sur le bon elem quand on remove
+	int left = 0;
+	int right = vec.size();
+	int mid;
 
-    for (size_t i = 0; i < p.id_vec.size(); ++i)
+	while (left < right)
+	{
+		mid = left + (right - left) / 2;
+		if (vec[mid].first < target)
+			left = mid + 1;
+		else
+			right = mid;
+	}
+	return left;
+}
+
+void put_pend_and_odd_in_main(PmergeMe &p, size_t turn)
+{
+	size_t target_pend = turn;
+	std::cout << "taget pend = " << target_pend << std::endl;
+	if (target_pend % 2 != 0)
+		target_pend--;
+	target_pend--;
+
+	std::cout << "taget pend = " << target_pend << std::endl;
+	//binary search: trouver l'emplacement ou mettre l'element dans main
+	int insertPos = my_binary_search(p.vecPairs, p.vec_pend[target_pend].first);
+	
+	std::cout << "insert pos = " << insertPos << std::endl;
+	//mettre l'element dans main
+
+	//pour odd voir le nb d'elem
+}
+
+void create_vec_pair(PmergeMe &p)
+{
+    int size = p.vec.size();
+
+    for (int i = 0; i < size; ++i)
+        p.vecPairs.push_back(std::make_pair(p.vec[i], p.id_vec[i]));
+    std::cout <<"--------- Pair ----------" << std::endl;
+    p.printVector(p.vecPairs);
+    
+}
+
+void classify_in_main_pend_and_odd(PmergeMe &p)
+{
+
+    for (size_t i = 0; i < p.vecPairs.size(); ++i)
     {
-        if (p.id_vec[i] != 0 && p.id_vec[i] % 2 == 0)
+        if (p.vecPairs[i].second != 0 && p.vecPairs[i].second % 2 == 0)
         {
-            p.vec_pend.push_back(p.vec[i - j]);
-            p.vec.erase(std::remove(p.vec.begin(), p.vec.end(), p.vec[i - j]), p.vec.end());
-            j++;
+            p.vec_pend.push_back(p.vecPairs[i]);
+            p.vecPairs.erase(std::remove(p.vecPairs.begin(), p.vecPairs.end(), p.vecPairs[i]), p.vecPairs.end());
+            i--;
+        }
+		if (p.vecPairs[i].second == -1)
+        {
+			std::cout << i << std::endl;
+            p.vec_odd.push_back(p.vecPairs[i]);
+            p.vecPairs.erase(std::remove(p.vecPairs.begin(), p.vecPairs.end(), p.vecPairs[i]), p.vecPairs.end());
+            i--;
         }
     }
     std::cout << std::endl;
     std::cout << "----- main -----" << std::endl;
-    p.printVector(p.vec);
+    p.printVector(p.vecPairs);
     std::cout << "----- pend -----" << std::endl;
     p.printVector(p.vec_pend);
-}
-
-void put_pend_in_main(PmergeMe &p, size_t turn)
-{
-    // voir pour binary search
-    size_t  pos = turn - 1;
-    std::vector<int>::iterator it = p.vec.begin() + pos;
-    size_t i = pos;
-
-    while ( it != p.vec.end() )
-    {
-        std::cout << "pend: " << p.vec_pend[pos] << " *it: " << *it << " +it: "<< *(it + turn) << std::endl;
-        if (p.vec_pend[pos] > *it
-            && p.vec_pend[pos] < *(it + turn))
-        {
-            p.vec.insert(it + 1, p.vec_pend.begin(), p.vec_pend.end());
-            break;
-        }
-        
-        i = i + pos;
-        if (i + turn < p.vec.size())
-            it = it + turn;
-        else
-        {
-            std::cout << "echec" << std::endl;
-            break;
-        }
-
-    }
-    p.printVector(p.vec);
-        // metre pend a la pos : p.vec[i + pos]
+	std::cout << "----- odd -----" << std::endl;
+    p.printVector(p.vec_odd);
 }
 
 int main(int argc, char **argv)
@@ -157,10 +182,11 @@ int main(int argc, char **argv)
         return 1;
     }
     turn = recursive_vec(p, 1, 2, 0);
-    std::cout << turn << std::endl;
+    std::cout << "nombre de recursive step1 - 1: " << turn << std::endl;
     identify_elem_vec(p, turn);
-    classify_in_main_and_pend(p);
-    put_pend_in_main(p, turn); // voir binary search
+    create_vec_pair(p);
+    classify_in_main_pend_and_odd(p);
+    put_pend_and_odd_in_main(p, turn); // voir binary search
     
     return 0;
 }

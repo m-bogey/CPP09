@@ -5,6 +5,7 @@
 #include <deque>
 #include <iostream>
 #include <string>
+#include <utility> // std::pair
 
 class PmergeMe
 {
@@ -13,14 +14,18 @@ class PmergeMe
         PmergeMe& operator=(const PmergeMe & o);
     public:
         std::vector<int> vec;
-        std::vector<int> vec_pend;
         std::vector<int> id_vec;
+        std::vector<std::pair<int, int> > vecPairs;
+        std::vector<std::pair<int, int> > vec_pend;
+        std::vector<std::pair<int, int> > vec_odd;
+
         std::deque<int> deq;
 
         PmergeMe();
         ~PmergeMe();
 
         void printVector(std::vector<int>& vec);
+        void printVector(std::vector<std::pair<int, int> >& vec);
 };
 
 #endif
