@@ -20,8 +20,11 @@ placer pend dans main avec la binary search(sur les plages avant indice)
 6 7 etant b1 je binary sarch entre b0 et a0
 
 valeur de i et j par appel de sort_vec
-    t1 t2 t3 t 4
+    t1 t2 t3 t4
 i = 0, 1, 3, 7
 j = 1, 3, 7, 15
 
 
+
+
+11 2 17 0 16 8 6 15 10 3 21 1 18 9 14 18 12 5 4 20 13 7

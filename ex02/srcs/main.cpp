@@ -1,8 +1,34 @@
 #include "PmergeMe.hpp"
-#include <cstdlib> // atoi
-#include <algorithm> // std::remove
 
-int parsing(int argc, char **argv, PmergeMe &p)
+int parsing(int argc, char **argv); // TODO: gerer int max
+
+int main(int argc, char **argv)
+{
+    PmergeMe p;
+
+    if (argc < 2)
+    {
+        std::cerr << "Need arguments" << std::endl;
+        return 1;
+    }
+    if (parsing(argc, argv) == 1)
+    {
+        std::cerr << "Only positiv int" << std::endl;
+        return 1;
+    }
+	//------------------- Vector ---------------------
+	std::vector<std::pair<int, int> > vec;
+	std::vector<std::pair<int, int> > vec_pend;
+
+	p.fillContainer(argc, argv, vec);
+	p.recursiveContainer(1, vec, vec_pend);
+
+
+	//----------------- Fin Vector ---------------------
+    return 0;
+}
+
+int parsing(int argc, char **argv)
 {
     int i = 1;
     int j;
@@ -15,12 +41,14 @@ int parsing(int argc, char **argv, PmergeMe &p)
                 return 1;
             j++;
         }
-        p.vec.push_back(atoi(argv[i]));
-        p.deq.push_back(atoi(argv[i])); // voir pour deque
         i++;
     }
     return 0;
 }
+
+
+
+/*
 
 void swapper(PmergeMe &p, size_t i, size_t j, size_t x)
 {
@@ -66,31 +94,6 @@ size_t recursive_vec(PmergeMe &p, size_t x, size_t y, size_t turn)
     return recursive_vec(p, x, y, turn);
 }
 
-void identify_elem_vec(PmergeMe &p, size_t &turn)
-{
-    size_t  i = 0;
-    int     id = 0;
-    int  compteur = 0;
-    int     turn_limit = static_cast<int>(turn);
-
-    if (turn_limit % 2 != 0)
-        turn_limit--;
-    while (i < p.vec.size())
-    {
-        p.id_vec.push_back(id);
-        compteur++;
-        if (compteur == turn_limit && id != -1)
-        {
-            compteur = 0;
-            id++;
-            if (id >= static_cast<int>(turn) + 1)
-                id = -1;
-        }
-        i++;
-    }
-    std::cout << "------------- identifiant pour classer vector ------------" << std::endl;
-    p.printVector(p.id_vec);
-}
 
 int my_binary_search(const std::vector<std::pair<int, int> >& vec, int target)
 {
@@ -164,29 +167,4 @@ void classify_in_main_pend_and_odd(PmergeMe &p)
     p.printVector(p.vec_pend);
 	std::cout << "----- odd -----" << std::endl;
     p.printVector(p.vec_odd);
-}
-
-int main(int argc, char **argv)
-{
-    if (argc < 2)
-    {
-        std::cerr << "Need arguments" << std::endl;
-        return 1;
-    }
-    PmergeMe p;
-    size_t turn;
-
-    if (parsing(argc, argv, p) == 1)
-    {
-        std::cerr << "Only positiv int" << std::endl;
-        return 1;
-    }
-    turn = recursive_vec(p, 1, 2, 0);
-    std::cout << "nombre de recursive step1 - 1: " << turn << std::endl;
-    identify_elem_vec(p, turn);
-    create_vec_pair(p);
-    classify_in_main_pend_and_odd(p);
-    put_pend_and_odd_in_main(p, turn); // voir binary search
-    
-    return 0;
-}
+}*/
