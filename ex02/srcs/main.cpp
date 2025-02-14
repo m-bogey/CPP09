@@ -50,51 +50,6 @@ int parsing(int argc, char **argv)
 
 /*
 
-void swapper(PmergeMe &p, size_t i, size_t j, size_t x)
-{
-    ssize_t nb_swap = x - 1; //=> nb d'element a swap
-
-    while (nb_swap >= 0)
-    {
-        std::swap(p.vec[i - nb_swap], p.vec[j - nb_swap]);
-        nb_swap--;
-    }
-}
-
-size_t recursive_vec(PmergeMe &p, size_t x, size_t y, size_t turn)
-{
-    size_t i = x - 1;
-    size_t j = y - 1;
-    int     compteur = 0;
-
-    //p.printVector(p.vec);
-    
-    while (j < p.vec.size())
-    {
-        if (p.vec[i] > p.vec[j])
-            swapper(p, i, j, x);
-       // std::cout << " i = " << i << " j = " << j << std::endl;
-        i = i + y;
-        j = i + x;
-        compteur++;
-    }
-
-    p.printVector(p.vec);
-    //std::cout << "---- x et y avant " << x << " " << y << std::endl;
-    if (x == 1)
-        x = 2;
-    else
-        x = (x) * 2;
-    y = (x * 2);
-
-    turn++;
-    //std::cout << "---- x et y apres " << x << " " << y << "size du vec " << p.vec.size()<<std::endl;
-    if (compteur == 1)
-        return turn;
-    return recursive_vec(p, x, y, turn);
-}
-
-
 int my_binary_search(const std::vector<std::pair<int, int> >& vec, int target)
 {
 	int left = 0;
@@ -128,17 +83,6 @@ void put_pend_and_odd_in_main(PmergeMe &p, size_t turn)
 	//mettre l'element dans main
 
 	//pour odd voir le nb d'elem
-}
-
-void create_vec_pair(PmergeMe &p)
-{
-    int size = p.vec.size();
-
-    for (int i = 0; i < size; ++i)
-        p.vecPairs.push_back(std::make_pair(p.vec[i], p.id_vec[i]));
-    std::cout <<"--------- Pair ----------" << std::endl;
-    p.printVector(p.vecPairs);
-    
 }
 
 void classify_in_main_pend_and_odd(PmergeMe &p)

@@ -35,6 +35,7 @@ class PmergeMe
         {
             size_t x = lvl - 1;
             size_t y = (lvl * 2) - 1;
+			size_t compteur = 0;
 
             while (y < c.size())
             {
@@ -45,8 +46,9 @@ class PmergeMe
                 }
                 x += lvl * 2;
                 y += lvl * 2;
+				compteur++;
             }
-            if (lvl * 2 < c.size())
+            if (compteur > 1)
                 recursiveContainer(lvl * 2, c, pend);
             identifyElemContainer(lvl, c);
             std::cout<<"size c = "<< c.size() << " lvl = " << lvl << std::endl;
@@ -54,8 +56,8 @@ class PmergeMe
 		//	printContainer(pend);
 			get_pend(c, pend);
 			std::cout << "------- debut --------" << std::endl;
-		//	printContainer(c);
-		//	printContainer(pend);
+			printContainer(c);
+			printContainer(pend);
 			std::cout << "------- fin --------" << std::endl;
 			putPendInMain(lvl, c, pend);
 			printContainer(c);
@@ -105,12 +107,48 @@ class PmergeMe
 				// faire un binary sur les max/lvl
 				// insert les element dans main et retire de pend
 			}
+			if (pend.size() != 0)
+				std::cout << " binary : " << my_binary_search(c, pend[lvl - 1].first, pend[lvl - 1].second, lvl) << std::endl;
 
 			while (pend.size() != 0)
 			{
 				c.push_back(pend[0]);
 				pend.erase(std::remove(pend.begin(), pend.end(), pend[0]), pend.end());
 			}
+		}
+
+		template <typename Container>
+		size_t my_binary_search(Container& c, int target, int id, size_t lvl)
+		{
+			size_t left = lvl - 1;
+			size_t right = checkPlage(c, id) - 1;
+			std::cout << " plage = " << right << std::endl;
+			size_t mid;
+
+			while (left < right)
+			{
+				mid = left + (right - left) / 2;
+				if (c[mid].first < target)
+					left = mid + lvl;
+				else
+					right = mid;
+			}
+			return (left);
+		}
+
+		template <typename Container>
+		size_t checkPlage(Container& c, int id)
+		{
+			size_t i = 0;
+			size_t size = c.size();
+
+			while (i < size)
+			{
+				if (c[i].second > id)
+					break;
+				i++;
+			}
+			return (i);
 		}
 
         template <typename Container>
