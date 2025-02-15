@@ -38,6 +38,9 @@ class PmergeMe
             size_t y = (lvl * 2) - 1;
 			size_t compteur = 0;
 
+			if (x >= c.size() || y >= c.size())
+				return;
+
             while (y < c.size())
             {
                 if (c[x].first > c[y].first)
@@ -55,9 +58,10 @@ class PmergeMe
             std::cout<<"size c = "<< c.size() << " lvl = " << lvl << std::endl;
         //    printContainer(c);
 		//	printContainer(pend);
-			 std::cout << "------- debut --------" << std::endl;
-			 std::cout << "main===> "<<std::endl;
-			 printContainer(c);
+		//	 std::cout << "------- debut --------" << std::endl;
+		//	 std::cout << "main===> "<<std::endl;
+		//	 printContainer(c);
+		//	 printContainer(pend);
 			get_pend(c, pend);
 			// std::cout << "pend: "<<std::endl;
 			// printContainer(pend);
@@ -93,21 +97,31 @@ class PmergeMe
 		template <typename Container>
 		void get_pend( Container& c, Container& pend)
 		{
+			typename Container::iterator it;
+
 			for(size_t i = 0; i < c.size(); ++i)
 			{
 				if (c[i].second != 0 && c[i].second % 2 == 0)
 				{
 					pend.push_back(c[i]);
-					c.erase(std::remove(c.begin(), c.end(), c[i]), c.end());
+					it = std::find(c.begin(), c.end(), c[i]);
+					if (it != c.end())
+						c.erase(it);
 					i--;
 				}
 			}
+			std::cout << "-------------------------" << std::endl;
+			printContainer(c);
+			printContainer(pend);
+			std::cout << "-------------------------" << std::endl;
 		}
 
 		template <typename Container>
 		void putPendInMain(size_t lvl, Container& c, Container& pend, Container& max)
 		{
 			int compteur = 0;
+			typename Container::iterator it;
+			size_t emplacement;
 
 			while (lvl <= pend.size())
 			{
@@ -122,18 +136,25 @@ class PmergeMe
 					}
 					compteur++;
 				}
-				std::cout << "main = ";
+	/*			std::cout << "main = ";
 				printContainer(c);
 				std::cout << "pend = ";
 				printContainer(pend);
 				std::cout << "max = ";
 				printContainer(max);
-
-				std::vector<std::pair<int, int> >::iterator it = std::upper_bound(max.begin(), max.end(), pend[lvl - 1]);
-				std::cout << "it first = " << it->first << " pend[lvl-1] = " << pend[lvl - 1].first << std::endl;
+*/
+				it = std::upper_bound(max.begin(), max.end(), pend[lvl - 1]);
 				
-				size_t emplacement = it - max.begin();
-				emplacement *= (lvl);
+				if (it == max.end())
+					emplacement = c.size();
+				else
+				{
+					emplacement = it - max.begin();
+					emplacement *= (lvl);
+					if (emplacement > c.size())
+						emplacement = c.size();
+				}
+				std::cout << "it first = " << it->first << " pend[lvl-1] = " << pend[lvl - 1].first << std::endl;
 
 				c.insert(c.begin() + emplacement, pend.begin(), pend.begin() + lvl);
 				pend.erase(pend.begin(), pend.begin() + lvl);
