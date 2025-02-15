@@ -1,4 +1,5 @@
 #include "PmergeMe.hpp"
+#include <ctime>
 
 int parsing(int argc, char **argv); // TODO: gerer int max
 
@@ -17,16 +18,39 @@ int main(int argc, char **argv)
         return 1;
     }
 	//------------------- Vector ---------------------
+    clock_t start_vec = clock();
+
 	std::vector<std::pair<int, int> > vec;
 	std::vector<std::pair<int, int> > vec_pend;
     std::vector<std::pair<int, int> > vec_max;
 
 	p.fillContainer(argc, argv, vec);
+    std::cout << "Before: ";
+    p.printContainer(vec);
 	p.recursiveContainer(1, vec, vec_pend, vec_max);
-    std::cout << "\n\n\n";
+    std::cout << "After:  ";
+    p.printContainer(vec);
 
-
+    clock_t end_vec = clock();
+    double time_vec = double(end_vec - start_vec) / CLOCKS_PER_SEC;
 	//----------------- Fin Vector ---------------------
+
+    //------------------- Deque ---------------------
+    clock_t start_deq = clock();
+
+	std::deque<std::pair<int, int> > deq;
+	std::deque<std::pair<int, int> > deq_pend;
+    std::deque<std::pair<int, int> > deq_max;
+
+	p.fillContainer(argc, argv, deq);
+	p.recursiveContainer(1, deq, deq_pend, deq_max);
+
+    clock_t end_deq = clock();
+    double time_deq = double(end_deq - start_deq) / CLOCKS_PER_SEC;
+	//----------------- Fin Deque ---------------------
+
+    std::cout << "Time to process a range of  " << vec.size() << " elements with std::vector : " << time_vec << " us" << std::endl;
+    std::cout << "Time to process a range of  " << deq.size() << " elements with std::deque : " << time_deq << " us" << std::endl;
     return 0;
 }
 

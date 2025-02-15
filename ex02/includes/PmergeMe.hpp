@@ -55,22 +55,8 @@ class PmergeMe
             if (compteur > 1)
                 recursiveContainer(lvl * 2, c, pend, max);
             identifyElemContainer(lvl, c);
-            std::cout<<"size c = "<< c.size() << " lvl = " << lvl << std::endl;
-        //    printContainer(c);
-		//	printContainer(pend);
-		//	 std::cout << "------- debut --------" << std::endl;
-		//	 std::cout << "main===> "<<std::endl;
-		//	 printContainer(c);
-		//	 printContainer(pend);
 			get_pend(c, pend);
-			// std::cout << "pend: "<<std::endl;
-			// printContainer(pend);
-			// std::cout << "------- fin --------" << std::endl;
 			putPendInMain(lvl, c, pend, max);
-			// std::cout << "main: "<<std::endl;
-			// printContainer(c);
-			// std::cout << "pend: "<<std::endl;
-			// printContainer(pend);
         }
 
         template <typename Container>
@@ -110,10 +96,6 @@ class PmergeMe
 					i--;
 				}
 			}
-			std::cout << "-------------------------" << std::endl;
-			printContainer(c);
-			printContainer(pend);
-			std::cout << "-------------------------" << std::endl;
 		}
 
 		template <typename Container>
@@ -125,8 +107,6 @@ class PmergeMe
 
 			while (lvl <= pend.size())
 			{
-				// faire un binary sur les max/lvl
-				// insert les element dans main et retire de pend
 				for (size_t i = 0; i < c.size(); ++i)
 				{
 					if (compteur == static_cast<int>(lvl - 1))
@@ -136,15 +116,7 @@ class PmergeMe
 					}
 					compteur++;
 				}
-	/*			std::cout << "main = ";
-				printContainer(c);
-				std::cout << "pend = ";
-				printContainer(pend);
-				std::cout << "max = ";
-				printContainer(max);
-*/
-				it = std::upper_bound(max.begin(), max.end(), pend[lvl - 1]);
-				
+				it = std::upper_bound(max.begin(), max.end(), pend[lvl - 1]);			
 				if (it == max.end())
 					emplacement = c.size();
 				else
@@ -154,25 +126,14 @@ class PmergeMe
 					if (emplacement > c.size())
 						emplacement = c.size();
 				}
-				std::cout << "it first = " << it->first << " pend[lvl-1] = " << pend[lvl - 1].first << std::endl;
-
 				c.insert(c.begin() + emplacement, pend.begin(), pend.begin() + lvl);
 				pend.erase(pend.begin(), pend.begin() + lvl);
-
-				std::cout << "main appppppppppppppppppppppppppp= ";
-				printContainer(c);
-				std::cout << "pend apppppppppppppppppppppppppp= ";
-				printContainer(pend);
-
-
 				max.clear();
 			}
-
-
 			while (pend.size() != 0)
 			{
 				c.push_back(pend[0]);
-				pend.erase(std::remove(pend.begin(), pend.end(), pend[0]), pend.end());
+				pend.erase(pend.begin());
 			}
 		}
 
@@ -183,9 +144,9 @@ class PmergeMe
             for(it = container.begin(); it != container.end(); ++it)
                 std::cout << it->first << " ";
             std::cout << std::endl;
-            for(it = container.begin(); it != container.end(); ++it)
-                std::cout << it->second << " ";
-            std::cout << std::endl;
+//            for(it = container.begin(); it != container.end(); ++it)
+//                std::cout << it->second << " ";
+//            std::cout << std::endl;
         }
 };
 
