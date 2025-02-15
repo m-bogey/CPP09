@@ -8,6 +8,7 @@
 #include <utility> // std::pair
 #include <cstdlib> // atoi
 #include <algorithm> // std::remove
+#include <iterator> // std::next
 
 class PmergeMe
 {
@@ -31,7 +32,7 @@ class PmergeMe
         }
 
         template <typename Container>
-        void    recursiveContainer(size_t lvl, Container& c, Container& pend)
+        void    recursiveContainer(size_t lvl, Container& c, Container& pend, Container& max)
         {
             size_t x = lvl - 1;
             size_t y = (lvl * 2) - 1;
@@ -49,19 +50,23 @@ class PmergeMe
 				compteur++;
             }
             if (compteur > 1)
-                recursiveContainer(lvl * 2, c, pend);
+                recursiveContainer(lvl * 2, c, pend, max);
             identifyElemContainer(lvl, c);
             std::cout<<"size c = "<< c.size() << " lvl = " << lvl << std::endl;
         //    printContainer(c);
 		//	printContainer(pend);
+			 std::cout << "------- debut --------" << std::endl;
+			 std::cout << "main===> "<<std::endl;
+			 printContainer(c);
 			get_pend(c, pend);
-			std::cout << "------- debut --------" << std::endl;
-			printContainer(c);
-			printContainer(pend);
-			std::cout << "------- fin --------" << std::endl;
-			putPendInMain(lvl, c, pend);
-			printContainer(c);
-			printContainer(pend);
+			// std::cout << "pend: "<<std::endl;
+			// printContainer(pend);
+			// std::cout << "------- fin --------" << std::endl;
+			putPendInMain(lvl, c, pend, max);
+			// std::cout << "main: "<<std::endl;
+			// printContainer(c);
+			// std::cout << "pend: "<<std::endl;
+			// printContainer(pend);
         }
 
         template <typename Container>
@@ -100,55 +105,54 @@ class PmergeMe
 		}
 
 		template <typename Container>
-		void putPendInMain(size_t lvl, Container& c, Container& pend)
+		void putPendInMain(size_t lvl, Container& c, Container& pend, Container& max)
 		{
-			if (lvl >= pend.size())
+			int compteur = 0;
+
+			while (lvl <= pend.size())
 			{
 				// faire un binary sur les max/lvl
 				// insert les element dans main et retire de pend
+				for (size_t i = 0; i < c.size(); ++i)
+				{
+					if (compteur == static_cast<int>(lvl - 1))
+					{
+						max.push_back(c[i]);
+						compteur = -1;
+					}
+					compteur++;
+				}
+				std::cout << "main = ";
+				printContainer(c);
+				std::cout << "pend = ";
+				printContainer(pend);
+				std::cout << "max = ";
+				printContainer(max);
+
+				std::vector<std::pair<int, int> >::iterator it = std::upper_bound(max.begin(), max.end(), pend[lvl - 1]);
+				std::cout << "it first = " << it->first << " pend[lvl-1] = " << pend[lvl - 1].first << std::endl;
+				
+				size_t emplacement = it - max.begin();
+				emplacement *= (lvl);
+
+				c.insert(c.begin() + emplacement, pend.begin(), pend.begin() + lvl);
+				pend.erase(pend.begin(), pend.begin() + lvl);
+
+				std::cout << "main appppppppppppppppppppppppppp= ";
+				printContainer(c);
+				std::cout << "pend apppppppppppppppppppppppppp= ";
+				printContainer(pend);
+
+
+				max.clear();
 			}
-			if (pend.size() != 0)
-				std::cout << " binary : " << my_binary_search(c, pend[lvl - 1].first, pend[lvl - 1].second, lvl) << std::endl;
+
 
 			while (pend.size() != 0)
 			{
 				c.push_back(pend[0]);
 				pend.erase(std::remove(pend.begin(), pend.end(), pend[0]), pend.end());
 			}
-		}
-
-		template <typename Container>
-		size_t my_binary_search(Container& c, int target, int id, size_t lvl)
-		{
-			size_t left = lvl - 1;
-			size_t right = checkPlage(c, id) - 1;
-			std::cout << " plage = " << right << std::endl;
-			size_t mid;
-
-			while (left < right)
-			{
-				mid = left + (right - left) / 2;
-				if (c[mid].first < target)
-					left = mid + lvl;
-				else
-					right = mid;
-			}
-			return (left);
-		}
-
-		template <typename Container>
-		size_t checkPlage(Container& c, int id)
-		{
-			size_t i = 0;
-			size_t size = c.size();
-
-			while (i < size)
-			{
-				if (c[i].second > id)
-					break;
-				i++;
-			}
-			return (i);
 		}
 
         template <typename Container>
