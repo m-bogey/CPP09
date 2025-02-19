@@ -37,6 +37,10 @@ class PmergeMe
             size_t x = lvl - 1;
             size_t y = (lvl * 2) - 1;
 			size_t compteur = 0;
+			size_t xx = x;
+			size_t yy = y;
+			size_t xxx = x;
+			size_t yyy = y;
 
 			if (x >= c.size() || y >= c.size())
 				return;
@@ -54,40 +58,69 @@ class PmergeMe
             }
             if (compteur > 1)
                 recursiveContainer(lvl * 2, c, pend, max);
+			while (yy < c.size())
+            {
+                if (c[xx].first > c[yy].first)
+                {
+                    for (size_t i = 0; i < lvl; ++i)
+                        std::swap(c[xx - i], c[yy - i]);
+                }
+                xx += lvl * 2;
+                yy += lvl * 2;
+				compteur++;
+            }
+
             identifyElemContainer(lvl, c);
 			get_pend(c, pend);
+			//jacobsthal(pend, lvl);
 			putPendInMain(lvl, c, pend, max);
+			
+			while (yyy < c.size())
+            {
+                if (c[xxx].first > c[yyy].first)
+                {
+                    for (size_t i = 0; i < lvl; ++i)
+                        std::swap(c[xxx - i], c[yyy - i]);
+                }
+                xxx += lvl * 2;
+                yyy += lvl * 2;
+				compteur++;
+            }
+
         }
 
         template <typename Container>
         void identifyElemContainer(size_t lvl, Container& c)
         {
-            size_t compteur = 0;
+			int lvl_int = static_cast<int>(lvl);
+            int compteur = 0;
             size_t i = 0;
-            size_t id = 0;
+            int id = 0;
 			size_t size = c.size();
 
             while (i < size)
             {
                 c[i].second = id;
                 compteur++;
-				if (compteur == lvl)
+				if (compteur == lvl_int && id != -1)
 				{
 					compteur = 0;
 					id++;
 				}
+				if (id >= lvl_int - 1)
+					id = -1;
                 i++;
             }
         }
 
 		template <typename Container>
-		void get_pend( Container& c, Container& pend)
+		void get_pend(Container& c, Container& pend)
 		{
 			typename Container::iterator it;
 
 			for(size_t i = 0; i < c.size(); ++i)
 			{
-				if (c[i].second != 0 && c[i].second % 2 == 0)
+				if ((c[i].second != 0 && c[i].second % 2 == 0) || c[i].second == -1)
 				{
 					pend.push_back(c[i]);
 					it = std::find(c.begin(), c.end(), c[i]);
@@ -134,6 +167,47 @@ class PmergeMe
 			{
 				c.push_back(pend[0]);
 				pend.erase(pend.begin());
+			}
+		}
+
+		template <typename Container>
+		void	jacobsthal(Container& pend, size_t lvl)
+		{
+			size_t size = pend.size();
+			size_t nb1 = 3;
+			size_t nb2 = 5;
+			size_t sum = nb1 * 2 + nb2;
+			size_t x;
+			size_t y;
+
+			if (size >= lvl * 2)
+			{
+				for(size_t i = 0; i < lvl; ++i)
+					std::swap(pend[(lvl - 1) - i], pend[(lvl * 2 - 1) - i]);
+			}
+			if (size >= lvl * 4)
+			{
+				for(size_t i = 0; i < lvl; ++i)
+					std::swap(pend[(lvl * 3 - 1) - i], pend[(lvl * 4 - 1) - i]);
+			}
+			while (sum <= size) // 11 5 
+			{
+				x = nb2;
+				y = sum;
+				while (x < y)
+				{
+					for(size_t i = 0; i < lvl; ++i)
+						std::swap(pend[(lvl * x - 1) - i], pend[(lvl * y - 1) - i]);
+					x++;
+					y--;
+				}
+				if (sum == size)
+					break;
+				nb1 = nb2;
+				nb2 = sum;
+				sum = nb1 * 2 + nb2;
+				if (sum > size)
+					sum = size;
 			}
 		}
 
