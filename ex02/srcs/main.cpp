@@ -1,7 +1,10 @@
 #include "PmergeMe.hpp"
 #include <ctime>
+#include <climits>
+#include <cerrno>
 
-int parsing(int argc, char **argv); // TODO: gerer int max
+int parsing(int argc, char **argv);
+int checkIntMax(int argc, char **argv);
 
 int main(int argc, char **argv)
 {
@@ -17,6 +20,11 @@ int main(int argc, char **argv)
     if (parsing(argc, argv) == 1)
     {
         std::cerr << "Only positiv int" << std::endl;
+        return 1;
+    }
+    if (checkIntMax(argc, argv) == 1)
+    {
+        std::cerr << "Only positiv int < int max" << std::endl;
         return 1;
     }
 	//------------------- Vector ---------------------
@@ -74,69 +82,19 @@ int parsing(int argc, char **argv)
     return 0;
 }
 
-
-
-/*
-
-int my_binary_search(const std::vector<std::pair<int, int> >& vec, int target)
+int checkIntMax(int argc, char **argv)
 {
-	int left = 0;
-	int right = vec.size();
-	int mid;
+    int i = 1;
+    char *endptr;
+    errno = 0;
+    long num;
 
-	while (left < right)
-	{
-		mid = left + (right - left) / 2;
-		if (vec[mid].first < target)
-			left = mid + 1;
-		else
-			right = mid;
-	}
-	return left;
-}
-
-void put_pend_and_odd_in_main(PmergeMe &p, size_t turn)
-{
-	size_t target_pend = turn;
-	std::cout << "taget pend = " << target_pend << std::endl;
-	if (target_pend % 2 != 0)
-		target_pend--;
-	target_pend--;
-
-	std::cout << "taget pend = " << target_pend << std::endl;
-	//binary search: trouver l'emplacement ou mettre l'element dans main
-	int insertPos = my_binary_search(p.vecPairs, p.vec_pend[target_pend].first);
-	
-	std::cout << "insert pos = " << insertPos << std::endl;
-	//mettre l'element dans main
-
-	//pour odd voir le nb d'elem
-}
-
-void classify_in_main_pend_and_odd(PmergeMe &p)
-{
-
-    for (size_t i = 0; i < p.vecPairs.size(); ++i)
+    while(i < argc)
     {
-        if (p.vecPairs[i].second != 0 && p.vecPairs[i].second % 2 == 0)
-        {
-            p.vec_pend.push_back(p.vecPairs[i]);
-            p.vecPairs.erase(std::remove(p.vecPairs.begin(), p.vecPairs.end(), p.vecPairs[i]), p.vecPairs.end());
-            i--;
-        }
-		if (p.vecPairs[i].second == -1)
-        {
-			std::cout << i << std::endl;
-            p.vec_odd.push_back(p.vecPairs[i]);
-            p.vecPairs.erase(std::remove(p.vecPairs.begin(), p.vecPairs.end(), p.vecPairs[i]), p.vecPairs.end());
-            i--;
-        }
+        num = std::strtol(argv[i], &endptr, 10);
+        if (errno == ERANGE || num > INT_MAX)
+            return 1;
+        i++;
     }
-    std::cout << std::endl;
-    std::cout << "----- main -----" << std::endl;
-    p.printVector(p.vecPairs);
-    std::cout << "----- pend -----" << std::endl;
-    p.printVector(p.vec_pend);
-	std::cout << "----- odd -----" << std::endl;
-    p.printVector(p.vec_odd);
-}*/
+    return 0;
+}

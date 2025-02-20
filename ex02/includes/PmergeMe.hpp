@@ -107,7 +107,7 @@ class PmergeMe
 					compteur = 0;
 					id++;
 				}
-				if (id >= lvl_int - 1)
+				if (id > lvl_int - 1)
 					id = -1;
                 i++;
             }
