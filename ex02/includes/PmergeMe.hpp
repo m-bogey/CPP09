@@ -72,13 +72,13 @@ class PmergeMe
 
             identifyElemContainer(lvl, c);
 			get_pend(c, pend);
-/*			std::cout << "--------- lvl = " << lvl << " -----------" << std::endl;
+	/*		std::cout << "--------- lvl = " << lvl << " -----------" << std::endl;
 			std::cout << "Main : ";
 			printContainer(c);
 			std::cout << "Pend : ";
 			printContainer(pend);
 			std::cout << "-------------------------------" << std::endl;
-*/			//jacobsthal(pend, lvl);
+	*/		jacobsthal(pend, lvl);
 			putPendInMain(lvl, c, pend, max);
 			
 			while (yyy < c.size())
@@ -180,12 +180,11 @@ class PmergeMe
 		void	jacobsthal(Container& pend, size_t lvl)
 		{
 			size_t size = pend.size();
-			size_t nb1 = 3;
-			size_t nb2 = 5;
-			size_t sum = nb1 * 2 + nb2;
 			size_t x;
 			size_t y;
-
+			size_t tmp;
+		//	std::cout << "Avant lvl = " << lvl << "\n";
+		//	printContainer(pend);
 			if (size >= lvl * 2)
 			{
 				for(size_t i = 0; i < lvl; ++i)
@@ -196,25 +195,28 @@ class PmergeMe
 				for(size_t i = 0; i < lvl; ++i)
 					std::swap(pend[(lvl * 3 - 1) - i], pend[(lvl * 4 - 1) - i]);
 			}
-			while (sum <= size) // 11 5 
+			x = 5;
+			y = 11;
+			while (1)
 			{
-				x = nb2;
-				y = sum;
-				while (x < y)
+				if (size >= lvl * y)
 				{
-					for(size_t i = 0; i < lvl; ++i)
-						std::swap(pend[(lvl * x - 1) - i], pend[(lvl * y - 1) - i]);
-					x++;
-					y--;
+					while (x < y)
+					{
+						for(size_t i = 0; i < lvl; ++i)
+							std::swap(pend[(lvl * x - 1) - i], pend[(lvl * y - 1) - i]);
+						x++;
+						y--;
+					}
 				}
-				if (sum == size)
+				else
 					break;
-				nb1 = nb2;
-				nb2 = sum;
-				sum = nb1 * 2 + nb2;
-				if (sum > size)
-					sum = size;
+				tmp = y;
+				y = x * 2 + y;
+				x = tmp + 1;
 			}
+		//	std::cout << "Apres size = " << size << "\n";
+		//	printContainer(pend);
 		}
 
         template <typename Container>
