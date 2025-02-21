@@ -5,12 +5,12 @@ NUM_TESTS=1000 #nombre de test
 for ((test_num=1; test_num<=NUM_TESTS; test_num++)); do
     echo "===== Test $test_num ====="
 
-	N=$((RANDOM % 3000 + 1))   #N = nb elements/arguments
+	N=$((RANDOM % 10000 + 1))   #N = nb elements/arguments
 	echo "Nombre d'éléments : $N"
 
 	numbers=""
 	for ((i=0; i<N; i++)); do
-		numbers+="$((RANDOM % 2000)) "  #nombre genere entre 0 et xxxx
+		numbers+="$((RANDOM % 200)) "  #nombre genere entre 0 et xxxx
 	done
 
 	echo "$numbers"

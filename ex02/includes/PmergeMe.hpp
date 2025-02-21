@@ -72,7 +72,13 @@ class PmergeMe
 
             identifyElemContainer(lvl, c);
 			get_pend(c, pend);
-			//jacobsthal(pend, lvl);
+/*			std::cout << "--------- lvl = " << lvl << " -----------" << std::endl;
+			std::cout << "Main : ";
+			printContainer(c);
+			std::cout << "Pend : ";
+			printContainer(pend);
+			std::cout << "-------------------------------" << std::endl;
+*/			//jacobsthal(pend, lvl);
 			putPendInMain(lvl, c, pend, max);
 			
 			while (yyy < c.size())
@@ -100,6 +106,8 @@ class PmergeMe
 
             while (i < size)
             {
+				if (c.size() - (i) < lvl && compteur == 0)
+					id = -1;
                 c[i].second = id;
                 compteur++;
 				if (compteur == lvl_int && id != -1)
@@ -107,8 +115,6 @@ class PmergeMe
 					compteur = 0;
 					id++;
 				}
-				if (id > lvl_int - 1)
-					id = -1;
                 i++;
             }
         }
@@ -218,9 +224,9 @@ class PmergeMe
             for(it = container.begin(); it != container.end(); ++it)
                 std::cout << it->first << " ";
             std::cout << std::endl;
-//            for(it = container.begin(); it != container.end(); ++it)
-//                std::cout << it->second << " ";
-//            std::cout << std::endl;
+        //    for(it = container.begin(); it != container.end(); ++it)
+        //        std::cout << it->second << " ";
+        //    std::cout << std::endl;
         }
 };
 
